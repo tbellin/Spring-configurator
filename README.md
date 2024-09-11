@@ -9,6 +9,7 @@ Questa applicazione Spring Boot è progettata per configurare e avviare un'appli
 - **Caricamento delle variabili d'ambiente**: Legge le variabili d'ambiente da un file `.env`.
 - **Sostituzione delle variabili nei file YAML**: Sostituisce le variabili d'ambiente nei file YAML di configurazione specificati.
 - **Supporto per più file YAML**: Supporta la configurazione di uno o due file YAML.
+- **Ripristino dei file YAML**: Permette di ripristinare i file YAML alle condizioni iniziali utilizzando backup.
 
 ## Requisiti
 
@@ -38,18 +39,3 @@ java -jar target/spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath
 ````
 java -jar target/spring-configurator-1.0-SNAPSHOT.jar src/main/resources/.env src/main/resources/application-prod.yml src/main/resources/application-dev.yml
 `````
-
-## Struttura del Progetto
-
-- **src/main/java**: Contiene il codice sorgente Java.
-- **src/main/resources**: Contiene i file di configurazione e le risorse statiche.
-- **pom.xml**: File di configurazione di Maven.
-
-## Autore
-
-- Nome: [Il Tuo Nome]
-- Email: [la.tua.email@example.com]
-
-## Licenza
-
-Questo progetto è distribuito sotto la licenza MIT. Vedi il file [LICENSE](LICENSE) per maggiori dettagli.

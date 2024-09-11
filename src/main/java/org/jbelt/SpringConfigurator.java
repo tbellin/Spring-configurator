@@ -3,6 +3,7 @@ package org.jbelt;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +12,23 @@ import java.util.stream.Collectors;
 public class SpringConfigurator {
     public static void main(String[] args) throws IOException {
         if (args.length < 2) {
-            System.out.println("Usage: java -jar Spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath1> [<ymlFilePath2>]");
+            System.out.println("Usage: java -jar Spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath1> [<ymlFilePath2>] [--restore]");
             return;
         }
 
         String envFilePath = args[0];
         String ymlFilePath1 = args[1];
-        String ymlFilePath2 = args.length > 2 ? args[2] : null;
+        String ymlFilePath2 = args.length > 2 && !args[2].equals("--restore") ? args[2] : null;
+        boolean restore = args.length > 2 && args[args.length - 1].equals("--restore");
+
+        if (restore) {
+            restoreBackup(ymlFilePath1);
+            if (ymlFilePath2 != null) {
+                restoreBackup(ymlFilePath2);
+            }
+            System.out.println("Files restored from backup.");
+            return;
+        }
 
         // Verifica l'esistenza dei file
         if (!Files.exists(Paths.get(envFilePath))) {
@@ -35,11 +46,19 @@ public class SpringConfigurator {
             return;
         }
 
+        // Crea backup dei file YAML
+        createBackup(ymlFilePath1);
+        if (ymlFilePath2 != null) {
+            createBackup(ymlFilePath2);
+        }
+
         Map<String, String> envVariables = loadEnvVariables(envFilePath);
 
-        replaceVariablesInYml(ymlFilePath1, envVariables);
+        if (ymlFilePath1 != null && !ymlFilePath1.isEmpty()) {
+            replaceVariablesInYml(ymlFilePath1, envVariables);
+        }
 
-        if (ymlFilePath2 != null) {
+        if (ymlFilePath2 != null && !ymlFilePath2.isEmpty()) {
             replaceVariablesInYml(ymlFilePath2, envVariables);
         }
     }
@@ -63,5 +82,21 @@ public class SpringConfigurator {
                 })
                 .collect(Collectors.toList());
         Files.write(Paths.get(filePath), updatedLines);
+    }
+
+    private static void createBackup(String filePath) throws IOException {
+        Path source = Paths.get(filePath);
+        Path backup = Paths.get(filePath + ".bak");
+        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private static void restoreBackup(String filePath) throws IOException {
+        Path backup = Paths.get(filePath + ".bak");
+        Path original = Paths.get(filePath);
+        if (Files.exists(backup)) {
+            Files.copy(backup, original, StandardCopyOption.REPLACE_EXISTING);
+        } else {
+            System.out.println("Backup not found for " + filePath);
+        }
     }
 }

@@ -29,6 +29,12 @@ Per eseguire l'applicazione, utilizzare il seguente comando:
 java -jar target/spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath1> [<ymlFilePath2>]
 ````
 
+Per eseguire l'applicazione di ripristino da backup, utilizzare il seguente comando:
+
+````
+java -jar target/spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath1> [<ymlFilePath2>] --restore
+````
+
 
 - `<envFilePath>`: Percorso al file `.env` contenente le variabili d'ambiente.
 - `<ymlFilePath1>`: Percorso al primo file YAML di configurazione.

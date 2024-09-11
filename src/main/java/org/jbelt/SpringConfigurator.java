@@ -10,9 +10,14 @@ import java.util.stream.Collectors;
 
 public class SpringConfigurator {
     public static void main(String[] args) throws IOException {
-        String envFilePath = ".env"; // File .env nella radice del progetto
-        String ymlFilePath1 = System.getProperty("config.file1"); // Primo file di configurazione
-        String ymlFilePath2 = System.getProperty("config.file2"); // Secondo file di configurazione (opzionale)
+        if (args.length < 2) {
+            System.out.println("Usage: java SpringConfigurator <envFilePath> <ymlFilePath1> [<ymlFilePath2>]");
+            return;
+        }
+
+        String envFilePath = args[0]; // File .env specificato in run string
+        String ymlFilePath1 = args[1]; // Primo file di configurazione specificato in run string
+        String ymlFilePath2 = args.length > 2 ? args[2] : null; // Secondo file di configurazione (opzionale)
 
         Map<String, String> envVariables = loadEnvVariables(envFilePath);
 

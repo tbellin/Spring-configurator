@@ -16,6 +16,7 @@
     </dependencies>
     <build>
         <plugins>
+            <!-- Plugin per la compilazione -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -25,6 +26,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <!-- Plugin per l'esecuzione -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -42,6 +44,24 @@
                         </systemProperty>
                     </systemProperties>
                 </configuration>
+            </plugin>
+            <!-- Plugin per la creazione del JAR eseguibile -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

@@ -11,21 +11,35 @@ import java.util.stream.Collectors;
 public class SpringConfigurator {
     public static void main(String[] args) throws IOException {
         if (args.length < 2) {
-            System.out.println("Usage: java SpringConfigurator <envFilePath> <ymlFilePath1> [<ymlFilePath2>]");
+            System.out.println("Usage: java -jar Spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath1> [<ymlFilePath2>]");
             return;
         }
 
-        String envFilePath = args[0]; // File .env specificato in run string
-        String ymlFilePath1 = args[1]; // Primo file di configurazione specificato in run string
-        String ymlFilePath2 = args.length > 2 ? args[2] : null; // Secondo file di configurazione (opzionale)
+        String envFilePath = args[0];
+        String ymlFilePath1 = args[1];
+        String ymlFilePath2 = args.length > 2 ? args[2] : null;
+
+        // Verifica l'esistenza dei file
+        if (!Files.exists(Paths.get(envFilePath))) {
+            System.out.println("Error: .env file not found at " + envFilePath);
+            return;
+        }
+
+        if (!Files.exists(Paths.get(ymlFilePath1))) {
+            System.out.println("Error: YAML file not found at " + ymlFilePath1);
+            return;
+        }
+
+        if (ymlFilePath2 != null && !Files.exists(Paths.get(ymlFilePath2))) {
+            System.out.println("Error: YAML file not found at " + ymlFilePath2);
+            return;
+        }
 
         Map<String, String> envVariables = loadEnvVariables(envFilePath);
 
-        if (ymlFilePath1 != null && !ymlFilePath1.isEmpty()) {
-            replaceVariablesInYml(ymlFilePath1, envVariables);
-        }
+        replaceVariablesInYml(ymlFilePath1, envVariables);
 
-        if (ymlFilePath2 != null && !ymlFilePath2.isEmpty()) {
+        if (ymlFilePath2 != null) {
             replaceVariablesInYml(ymlFilePath2, envVariables);
         }
     }

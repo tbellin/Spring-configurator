@@ -55,11 +55,9 @@ public class SpringConfigurator {
 
         Map<String, String> envVariables = loadEnvVariables(envFilePath);
 
-        if (ymlFilePath1 != null && !ymlFilePath1.isEmpty()) {
-            replaceVariablesInYml(ymlFilePath1, envVariables);
-        }
+        replaceVariablesInYml(ymlFilePath1, envVariables);
 
-        if (ymlFilePath2 != null && !ymlFilePath2.isEmpty()) {
+        if (ymlFilePath2 != null) {
             replaceVariablesInYml(ymlFilePath2, envVariables);
         }
     }
@@ -77,18 +75,21 @@ public class SpringConfigurator {
         List<String> updatedLines = lines.stream()
                 .map(line -> {
                     for (Map.Entry<String, String> entry : envVariables.entrySet()) {
-                        line = line.replace("${" + entry.getKey() + "}", entry.getValue());
+                        String variablePattern = "\\$\\{" + entry.getKey() + "(:[^}]*)?\\}";
+                        line = line.replaceAll(variablePattern, entry.getValue());
                     }
                     return line;
                 })
                 .collect(Collectors.toList());
         Files.write(Paths.get(filePath), updatedLines);
+        System.out.println("Updated file: " + filePath);
     }
 
     private static void createBackup(String filePath) throws IOException {
         Path source = Paths.get(filePath);
         Path backup = Paths.get(filePath + ".bak");
         Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+        System.out.println("Backup created for: " + filePath);
     }
 
     private static void restoreBackup(String filePath) throws IOException {
@@ -96,8 +97,9 @@ public class SpringConfigurator {
         Path original = Paths.get(filePath);
         if (Files.exists(backup)) {
             Files.copy(backup, original, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Restored backup for: " + filePath);
         } else {
-            System.out.println("Backup not found for " + filePath);
+            System.out.println("Backup not found for: " + filePath);
         }
     }
 }

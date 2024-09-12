@@ -44,4 +44,4 @@ java -jar target/spring-configurator-1.0-SNAPSHOT.jar <envFilePath> <ymlFilePath
 
 ````
 java -jar target/spring-configurator-1.0-SNAPSHOT.jar src/main/resources/.env src/main/resources/application-prod.yml src/main/resources/application-dev.yml
-`````
+````
